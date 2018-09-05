@@ -39,15 +39,15 @@ def train(train_matrix, train_category):
     p1_num = ones(num_words)
     p0_denom = 2.0
     p1_denom = 2.0
-    for i in range(num_train_docs):
+    for i, arr in enumerate(train_matrix):
         if train_category[i] == 1:
-            p1_num += train_matrix[i]
-            p1_denom += sum(train_matrix[i])
+            p1_num += arr
+            p1_denom += sum(arr)
         else:
-            p0_num += train_matrix[i]
-            p0_denom += sum(train_matrix[i])
-    p1_vect = log(p1_num/p1_denom)
-    p0_vect = log(p0_num/p0_denom)
+            p0_num += arr
+            p0_denom += sum(arr)
+    p1_vect = log(p1_num / p1_denom)
+    p0_vect = log(p0_num / p0_denom)
     return p0_vect, p1_vect, p_sex
 
 
@@ -90,7 +90,7 @@ def test():
     for index, item in enumerate(vocab_list):
         vocab_index_map[item] = index
 
-    with open('prob.txt', 'w') as f:
+    with open('prob.txt', 'r') as f:
         prob = json.load(f)
 
     p0_v = array(prob['p0_v'])
@@ -104,4 +104,4 @@ def test():
     print(count_right / count_total)
 
 if __name__ == '__main__':
-    main()
+    test()
