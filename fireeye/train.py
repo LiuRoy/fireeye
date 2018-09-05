@@ -74,8 +74,8 @@ def main():
     p0_v, p1_v, p_sex = train(array(train_mat), array(list_classes[:4000]))
     with open('prob.txt', 'w') as f:
         json.dump({
-            'p0_v': p0_v,
-            'p1_v': p1_v,
+            'p0_v': list(p0_v),
+            'p1_v': list(p1_v),
             'p_sex': p_sex
         }, f)
 
@@ -93,8 +93,8 @@ def test():
     with open('prob.txt', 'w') as f:
         prob = json.load(f)
 
-    p0_v = prob['p0_v']
-    p1_v = prob['p1_v']
+    p0_v = array(prob['p0_v'])
+    p1_v = array(prob['p1_v'])
     p_sex = prob['p_sex']
     for index, posting_doc in enumerate(list_posts[4000:]):
         count_total += 1
