@@ -60,7 +60,7 @@ def classify(vec_2_classify, p0_vec, p1_vec, p_class_1):
         return 0
 
 
-def testing():
+def main():
     list_posts, list_classes = load_data_set()
     vocab_set = create_vocab_set(list_posts)
     vocab_list = list(vocab_set)
@@ -68,15 +68,40 @@ def testing():
     for index, item in enumerate(vocab_list):
         vocab_index_map[item] = index
 
-    print(111111)
     train_mat = []
     for posting_doc in list_posts[:4000]:
         train_mat.append(word_set_2_vec(vocab_index_map, posting_doc))
-    print(1111111)
-    p0_v, p1_v, p_sex = train(array(train_mat), array(list_classes))
-    print(p0_v)
-    print(p1_v)
-    print(p_sex)
+    p0_v, p1_v, p_sex = train(array(train_mat), array(list_classes[:4000]))
+    with open('prob.txt', 'w') as f:
+        json.dump({
+            'p0_v': p0_v,
+            'p1_v': p1_v,
+            'p_sex': p_sex
+        }, f)
+
+
+def test():
+    count_total = 0
+    count_right = 0
+    list_posts, list_classes = load_data_set()
+    vocab_set = create_vocab_set(list_posts)
+    vocab_list = list(vocab_set)
+    vocab_index_map = {}
+    for index, item in enumerate(vocab_list):
+        vocab_index_map[item] = index
+
+    with open('prob.txt', 'w') as f:
+        prob = json.load(f)
+
+    p0_v = prob['p0_v']
+    p1_v = prob['p1_v']
+    p_sex = prob['p_sex']
+    for index, posting_doc in enumerate(list_posts[4000:]):
+        count_total += 1
+        this_doc = array(word_set_2_vec(vocab_index_map, posting_doc))
+        if classify(this_doc, p0_v, p1_v, p_sex) == list_classes[4000 + index]:
+            count_right += 1
+    print(count_right / count_total)
 
 if __name__ == '__main__':
-    testing()
+    main()
