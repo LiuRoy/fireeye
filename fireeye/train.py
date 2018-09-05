@@ -54,7 +54,7 @@ def train(train_matrix, train_category):
 def classify(vec_2_classify, p0_vec, p1_vec, p_class_1):
     p1 = sum(vec_2_classify * p1_vec) + log(p_class_1)
     p0 = sum(vec_2_classify * p0_vec) + log(1.0 - p_class_1)
-    if p1 > p0:
+    if p1 - p0 > 10:
         return 1
     else:
         return 0
@@ -82,23 +82,30 @@ def main():
 
 
 def test():
-    count_total = 0
-    count_right = 0
-
     list_posts, list_classes = load_data_set()
     with open('prob.txt', 'r') as f:
         prob = json.load(f)
     p0_v = array(prob['p0_v'])
     p1_v = array(prob['p1_v'])
     p_sex = prob['p_sex']
-    vocab_index_map = prob['vocab_index_map']
+    vocab_index_map = prob['vocab_map']
 
+    count1 = 0
+    count2 = 0
+    count3 = 0
+    count4 = 0
     for index, posting_doc in enumerate(list_posts[4000:]):
-        count_total += 1
         this_doc = array(word_set_2_vec(vocab_index_map, posting_doc))
-        if classify(this_doc, p0_v, p1_v, p_sex) == list_classes[4000 + index]:
-            count_right += 1
-    print(count_right / count_total)
+        result = classify(this_doc, p0_v, p1_v, p_sex)
+        if result == 1 and list_classes[4000 + index] == 1:
+            count1 += 1
+        if result == 0 and list_classes[4000 + index] == 1:
+            count2 += 1
+        if result == 1 and list_classes[4000 + index] == 0:
+            count3 += 1
+        if result == 0 and list_classes[4000 + index] == 0:
+            count4 += 1
+    print(count1, count2, count3, count4)
 
 if __name__ == '__main__':
     test()
