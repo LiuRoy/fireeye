@@ -76,26 +76,23 @@ def main():
         json.dump({
             'p0_v': list(p0_v),
             'p1_v': list(p1_v),
-            'p_sex': p_sex
+            'p_sex': p_sex,
+            'vocab_map': vocab_index_map,
         }, f)
 
 
 def test():
     count_total = 0
     count_right = 0
-    list_posts, list_classes = load_data_set()
-    vocab_set = create_vocab_set(list_posts)
-    vocab_list = list(vocab_set)
-    vocab_index_map = {}
-    for index, item in enumerate(vocab_list):
-        vocab_index_map[item] = index
 
+    list_posts, list_classes = load_data_set()
     with open('prob.txt', 'r') as f:
         prob = json.load(f)
-
     p0_v = array(prob['p0_v'])
     p1_v = array(prob['p1_v'])
     p_sex = prob['p_sex']
+    vocab_index_map = prob['vocab_index_map']
+
     for index, posting_doc in enumerate(list_posts[4000:]):
         count_total += 1
         this_doc = array(word_set_2_vec(vocab_index_map, posting_doc))
