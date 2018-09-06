@@ -72,8 +72,8 @@ def main():
     for posting_doc in list_posts[:4000]:
         train_mat.append(word_set_2_vec(vocab_index_map, posting_doc))
     p0_v, p1_v, p_sex = train(array(train_mat), array(list_classes[:4000]))
-    with open('prob.txt', 'w') as f:
-        json.dump({
+    with open('prob.txt', 'wb') as f:
+        pickle.dump({
             'p0_v': list(p0_v),
             'p1_v': list(p1_v),
             'p_sex': p_sex,
@@ -83,8 +83,8 @@ def main():
 
 def test():
     list_posts, list_classes = load_data_set()
-    with open('prob.txt', 'r') as f:
-        prob = json.load(f)
+    with open('prob.txt', 'rb') as f:
+        prob = pickle.load(f)
     p0_v = array(prob['p0_v'])
     p1_v = array(prob['p1_v'])
     p_sex = prob['p_sex']

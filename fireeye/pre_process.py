@@ -131,7 +131,7 @@ def split_sentence(sentence):
         replace("?", " ")
     words = sentence.split(' ')
 
-    word_set = set()
+    word_freq_map = {}
     for word in words:
         if not word:
             continue
@@ -142,8 +142,11 @@ def split_sentence(sentence):
         if word in stop_words:
             continue
 
-        word_set.add(word)
-    return word_set
+        if word in word_map:
+            word_freq_map[word] += 1
+        else:
+            word_freq_map[word] = 1
+    return word_freq_map
 
 
 def main():
@@ -164,13 +167,14 @@ def main():
             continue
 
         video = video_info_map[video_id]
-        word_set = split_sentence(video['title'])
-        for tag in video.get('tag', []):
-            word_set |= split_sentence(tag)
+        title = video['title']
+        tag = video.get('tag', [])
+        tag.append(title)
+        word_freq = split_sentence(','.join(tag))
 
         data_list.append({
             'id': video_id,
-            'word': list(word_set),
+            'word': word_freq,
             'kind': video_kind
         })
 
