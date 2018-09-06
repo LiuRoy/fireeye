@@ -16,18 +16,23 @@ def load_data_set():
     return posting_list, class_vec
 
 
-def create_vocab_set(data_set):
+def create_vocab_index_map(data_set):
     vocal_set = set()
     for document in data_set:
-        vocal_set |= set(document)
-    return vocal_set
+        vocal_set |= set(document.keys())
+
+    vocab_list = list(vocal_set)
+    vocab_index_map = {}
+    for index, item in enumerate(vocab_list):
+        vocab_index_map[item] = index
+    return vocab_index_map
 
 
-def word_set_2_vec(vocab_index_map, input_set):
+def word_set_2_vec(vocab_index_map, input_freq_map):
     return_vec = [0] * len(vocab_index_map)
-    for word in input_set:
+    for word, freq in input_freq_map.items():
         if word in vocab_index_map:
-            return_vec[vocab_index_map[word]] = 1
+            return_vec[vocab_index_map[word]] = freq
     return return_vec
 
 
@@ -62,11 +67,7 @@ def classify(vec_2_classify, p0_vec, p1_vec, p_class_1):
 
 def main():
     list_posts, list_classes = load_data_set()
-    vocab_set = create_vocab_set(list_posts)
-    vocab_list = list(vocab_set)
-    vocab_index_map = {}
-    for index, item in enumerate(vocab_list):
-        vocab_index_map[item] = index
+    vocab_index_map = create_vocab_index_map(list_posts)
 
     train_mat = []
     for posting_doc in list_posts[:4000]:

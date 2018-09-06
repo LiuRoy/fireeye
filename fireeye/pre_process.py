@@ -142,7 +142,7 @@ def split_sentence(sentence):
         if word in stop_words:
             continue
 
-        if word in word_map:
+        if word in word_freq_map:
             word_freq_map[word] += 1
         else:
             word_freq_map[word] = 1
